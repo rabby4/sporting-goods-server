@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { ProductServices } from './product.service';
-import mongoose, { Mongoose } from 'mongoose';
 
 const createProduct = async (req: Request, res: Response) => {
   const result = await ProductServices.createProductIntoDB(req.body);
@@ -12,12 +11,18 @@ const createProduct = async (req: Request, res: Response) => {
 };
 
 const getAllProduct = async (req: Request, res: Response) => {
-  const result = await ProductServices.getAllProductFromDB();
-  res.json({
-    success: true,
-    message: 'Successfully retrieve All Products',
-    data: result,
-  });
+  try {
+    const searchTerms = req.query.searchTerms as string;
+
+    const result = await ProductServices.getAllProductFromDB(searchTerms);
+    res.json({
+      success: true,
+      message: 'Successfully retrieve All Products',
+      data: result,
+    });
+  } catch (error) {
+    throw new Error('Something went wrong!');
+  }
 };
 
 const getSingleProduct = async (req: Request, res: Response) => {

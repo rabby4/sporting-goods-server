@@ -5,9 +5,16 @@ const createProductIntoDB = async (payload: TProduct) => {
   return result;
 };
 
-const getAllProductFromDB = async () => {
-  const result = await Product.find();
-  return result;
+const getAllProductFromDB = async (searchTerms: string) => {
+  if (!searchTerms) {
+    const result = await Product.find();
+    return result;
+  } else {
+    const result = await Product.find({
+      name: { $regex: searchTerms, $options: 'i' },
+    });
+    return result;
+  }
 };
 
 const getSingleProductFromDB = async (id: string) => {
