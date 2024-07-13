@@ -1,3 +1,4 @@
+import QueryBuilder from '../../queryBuilder/QueryBuilder';
 import { Product } from './product.model';
 
 const createProductIntoDB = async (payload: TProduct) => {
@@ -5,16 +6,23 @@ const createProductIntoDB = async (payload: TProduct) => {
   return result;
 };
 
-const getAllProductFromDB = async (searchTerms: string) => {
-  if (!searchTerms) {
-    const result = await Product.find();
-    return result;
-  } else {
-    const result = await Product.find({
-      name: { $regex: searchTerms, $options: 'i' },
-    });
-    return result;
+const getAllProductFromDB = async (query: Record<string, unknown>) => {
+  const { category, ...otherFilters } = query;
+  const productQuery = new QueryBuilder(
+    Product.find().sort({ createdAt: -1 }),
+    otherFilters,
+  )
+    .filter()
+    .sort()
+    .fields()
+    .search(['name']);
+
+  if (category) {
+    productQuery.modelQuery = productQuery.modelQuery.where({ category });
   }
+
+  const result = await productQuery.modelQuery;
+  return result;
 };
 
 const getSingleProductFromDB = async (id: string) => {

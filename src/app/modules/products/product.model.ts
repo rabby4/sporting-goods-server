@@ -9,6 +9,7 @@ const productSchema = new Schema<TProduct>(
     quantity: { type: Number },
     price: { type: Number },
     image: { type: String },
+    rating: { type: Number },
   },
   {
     timestamps: true,

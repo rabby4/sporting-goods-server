@@ -6,4 +6,5 @@ type TProduct = {
   quantity: number;
   price: number;
   image: string;
+  rating: number;
 };
